@@ -9,9 +9,30 @@ import asyncio
 from typing import Dict, Any
 from urllib.parse import parse_qs
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from current_water_levels import get_current_water_data_values
 
 class MCPHandler(BaseHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        self._tools_cache = None
+        super().__init__(*args, **kwargs)
+    
+    def _get_tools(self):
+        """Lazy load tools configuration"""
+        if self._tools_cache is None:
+            self._tools_cache = [
+                {
+                    "name": "fetch_usgs_data",
+                    "description": "Fetch current water data from USGS for specified sites",
+                    "parameters": {
+                        "sites": "Comma-separated site numbers (e.g., '01646500' or '01646500,01647000')",
+                        "parameter_codes": "Comma-separated parameter codes (e.g., '00060,00065')",
+                        "start_date": "Start date in ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM)",
+                        "end_date": "End date in ISO format",
+                        "period": "Period code (e.g., 'P7D' for 7 days)"
+                    }
+                }
+            ]
+        return self._tools_cache
+    
     def do_GET(self):
         """Handle GET requests for tool discovery"""
         if self.path.startswith('/mcp'):
@@ -20,21 +41,9 @@ class MCPHandler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             
-            # Return available tools
+            # Return available tools with lazy loading
             response = {
-                "tools": [
-                    {
-                        "name": "fetch_usgs_data",
-                        "description": "Fetch current water data from USGS for specified sites",
-                        "parameters": {
-                            "sites": "Comma-separated site numbers (e.g., '01646500' or '01646500,01647000')",
-                            "parameter_codes": "Comma-separated parameter codes (e.g., '00060,00065')",
-                            "start_date": "Start date in ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM)",
-                            "end_date": "End date in ISO format",
-                            "period": "Period code (e.g., 'P7D' for 7 days)"
-                        }
-                    }
-                ]
+                "tools": self._get_tools()
             }
             self.wfile.write(json.dumps(response).encode())
         else:
@@ -81,6 +90,9 @@ class MCPHandler(BaseHTTPRequestHandler):
         params = request_data.get('parameters', {})
         
         if tool_name == 'fetch_usgs_data':
+            # Lazy import of the actual implementation
+            from current_water_levels import get_current_water_data_values
+            
             sites = params.get('sites', '')
             parameter_codes = params.get('parameter_codes', '')
             start_date = params.get('start_date', '')
