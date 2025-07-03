@@ -1,19 +1,12 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install uv
-RUN pip install uv
+# Copy the project files
+COPY . .
 
-# Copy project files
-COPY pyproject.toml uv.lock ./
-COPY *.py ./
+# Upgrade pip and install the project in editable mode
+RUN pip install --upgrade pip \
+    && pip install -e .
 
-# Install dependencies
-RUN uv sync --frozen
-
-# Expose port
-EXPOSE 8000
-
-# Run the server
-CMD ["python", "server.py"]
+CMD ["python", "current_water_levels.py"]
