@@ -1,5 +1,7 @@
 # USGS Water MCP
 
+[![smithery badge](https://smithery.ai/badge/@pgiffy/usgs-water-mcp)](https://smithery.ai/server/@pgiffy/usgs-water-mcp)
+
 ## Overview
 
 This MCP server provides access to real-time water data from the USGS Water Services API. It allows you to fetch instantaneous water measurements including stream flow, gage height, temperature, and other water quality parameters from thousands of monitoring stations across the United States.
@@ -47,6 +49,14 @@ Here's an example of fetching stream flow data for the Potomac River:
 ```
 
 ## Installation
+
+### Installing via Smithery
+
+To install usgs-water-mcp for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@pgiffy/usgs-water-mcp):
+
+```bash
+npx -y @smithery/cli install @pgiffy/usgs-water-mcp --client claude
+```
 
 ### Installing via pip
 
