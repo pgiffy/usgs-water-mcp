@@ -1,0 +1,10 @@
+[project]
+name = "usgs-water-mcp"
+version = "0.1.0"
+description = "MCP or usgs water data"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.25.0",
+    "mcp>=1.0.0"
+]
