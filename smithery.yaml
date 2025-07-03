@@ -1,7 +1,12 @@
 name: usgs-water-mcp
 description: MCP server for USGS water data
-runtime: custom
+runtime: container
 build:
-  - uv sync
-start: python server.py
-port: 8000
+  dockerfile: Dockerfile
+  dockerBuildPath: .
+startCommand:
+  type: http
+  configSchema:
+    type: object
+    properties: {}
+    required: []

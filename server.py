@@ -42,6 +42,7 @@ class MCPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             
             # Return available tools with lazy loading
+            # Configuration parameters are ignored for tool discovery
             response = {
                 "tools": self._get_tools()
             }
@@ -73,6 +74,20 @@ class MCPHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 error_response = {"error": str(e)}
                 self.wfile.write(json.dumps(error_response).encode())
+        else:
+            self.send_error(404)
+    
+    def do_DELETE(self):
+        """Handle DELETE requests"""
+        if self.path.startswith('/mcp'):
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            # Return success response for DELETE
+            response = {"status": "success"}
+            self.wfile.write(json.dumps(response).encode())
         else:
             self.send_error(404)
     
