@@ -1,5 +1,7 @@
 # USGS Water MCP
 
+[![smithery badge](https://smithery.ai/badge/@pgiffy/usgs-water-mcp)](https://smithery.ai/server/@pgiffy/usgs-water-mcp)
+
 ## Overview
 
 This MCP server provides access to real-time water data from the USGS Water Services API. It allows you to fetch instantaneous water measurements including stream flow, gage height, temperature, and other water quality parameters from thousands of monitoring stations across the United States.
@@ -74,7 +76,7 @@ pip install -e .
      "mcpServers": {
        "usgs-water": {
          "command": "python",
-         "args": ["/path/to/usgs-water-mcp/instantaneous.py"]
+         "args": ["/path/to/usgs-water-mcp/current_water_levels.py"]
        }
      }
    }
