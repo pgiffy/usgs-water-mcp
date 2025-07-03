@@ -1,12 +1,15 @@
-name: usgs-water-mcp
-description: MCP server for USGS water data
-runtime: container
-build:
-  dockerfile: Dockerfile
-  dockerBuildPath: .
 startCommand:
-  type: http
+  type: stdio
   configSchema:
     type: object
     properties: {}
     required: []
+  commandFunction: |
+    (config) => ({
+      "command": "python",
+      "args": ["current_water_levels.py"],
+      "env": {}
+    })
+
+build:
+  dockerBuildPath: .
