@@ -8,3 +8,6 @@ dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.1",
 ]
+
+[tool.setuptools]
+py-modules = ["main", "water_data_api", "flood_impact_api", "ogc_api", "current_water_levels"]

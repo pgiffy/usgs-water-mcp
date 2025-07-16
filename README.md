@@ -4,7 +4,31 @@
 
 ## Overview
 
-This MCP server provides access to real-time water data from the USGS Water Services API. It allows you to fetch instantaneous water measurements including stream flow, gage height, temperature, and other water quality parameters from thousands of monitoring stations across the United States.
+This MCP server provides comprehensive access to USGS water data through three APIs:
+
+1. **USGS Water Services API** - Real-time water measurements (stream flow, gage height, temperature, etc.)
+2. **Real-Time Flood Impacts API** - Current flooding conditions and reference points
+3. **OGC API** - Monitoring location metadata, agency codes, and geological information
+
+The server is modularly designed with separate API handlers unified through a single entry point.
+
+## Project Structure
+
+```
+usgs-water-mcp/
+├── main.py                  # Unified entry point
+├── water_data_api.py        # USGS Water Services API tools
+├── flood_impact_api.py      # Real-Time Flood Impacts API tools
+├── ogc_api.py              # OGC API tools
+├── current_water_levels.py  # Legacy combined file (deprecated)
+├── Dockerfile              # Docker configuration
+├── pyproject.toml          # Project dependencies
+└── README.md               # This file
+```
+
+## Service
+
+If you want a clean web interface that utilizes these tools visit https://aqua-node.onrender.com/landing and help me do some testing!
 
 ## Sample Output
 
@@ -76,7 +100,7 @@ pip install -e .
      "mcpServers": {
        "usgs-water": {
          "command": "python",
-         "args": ["/path/to/usgs-water-mcp/current_water_levels.py"]
+         "args": ["/path/to/usgs-water-mcp/main.py"]
        }
      }
    }
@@ -86,7 +110,9 @@ pip install -e .
 
 ## Available Tools
 
-### fetch_usgs_data
+### Water Data Tools
+
+#### fetch_usgs_data
 
 Fetch instantaneous water data from USGS monitoring stations.
 
@@ -110,6 +136,141 @@ Get current stream flow for the Potomac River near Washington, DC:
 sites: "01646500"
 parameter_codes: "00060"
 ```
+
+### Real-Time Flood Impact Tools
+
+#### get_flooding_reference_points
+
+Get currently flooding reference points (updated every 30 minutes).
+
+#### get_reference_points
+
+Get paginated list of reference points.
+
+**Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Number of results per page (default: 100)
+
+#### get_reference_point_by_id
+
+Get specific reference point by ID.
+
+**Parameters:**
+- `reference_point_id` (required): The reference point ID
+
+#### get_reference_points_by_state
+
+Get reference points for a specific state.
+
+**Parameters:**
+- `state_id` (required): State ID (e.g., "CA", "TX")
+
+#### get_reference_point_by_nwis_id
+
+Get reference point by USGS gage ID.
+
+**Parameters:**
+- `nwis_id` (required): USGS National Water Information System site ID
+
+#### get_reference_points_by_nws_id
+
+Get reference points by National Weather Service ID.
+
+**Parameters:**
+- `nws_id` (required): National Weather Service location ID
+
+#### get_inactive_reference_points
+
+Get inactive reference points.
+
+#### get_states
+
+Get list of states.
+
+#### get_state_by_id
+
+Get specific state information.
+
+**Parameters:**
+- `state_id` (required): State ID (e.g., "CA", "TX")
+
+#### get_counties
+
+Get list of counties.
+
+#### get_counties_by_state
+
+Get counties for a specific state.
+
+**Parameters:**
+- `state_id` (required): State ID (e.g., "CA", "TX")
+
+#### get_nws_usgs_crosswalk
+
+Get NWS/USGS crosswalk data.
+
+### OGC API Tools
+
+#### get_monitoring_locations
+
+Get monitoring locations with extensive filtering options.
+
+**Parameters:**
+- `bbox` (optional): Bounding box as "minx,miny,maxx,maxy"
+- `limit` (optional): Maximum number of results (default: 100)
+- `offset` (optional): Starting offset for pagination (default: 0)
+- `agency_code` (optional): Filter by agency code (e.g., "USGS")
+- `state_code` (optional): Filter by state code (e.g., "CA")
+- `county_code` (optional): Filter by county code
+- `site_type_code` (optional): Filter by site type code
+- `monitoring_location_number` (optional): Specific monitoring location number
+
+#### get_monitoring_location_by_id
+
+Get specific monitoring location by ID.
+
+**Parameters:**
+- `location_id` (required): The monitoring location ID
+
+#### get_agency_codes
+
+Get agency identification codes.
+
+**Parameters:**
+- `limit` (optional): Maximum number of results (default: 100)
+- `offset` (optional): Starting offset for pagination (default: 0)
+
+#### get_altitude_datums
+
+Get vertical datum information (recommended: NAVD88).
+
+**Parameters:**
+- `limit` (optional): Maximum number of results (default: 100)
+- `offset` (optional): Starting offset for pagination (default: 0)
+
+#### get_aquifer_codes
+
+Get aquifer identification information.
+
+**Parameters:**
+- `limit` (optional): Maximum number of results (default: 100)
+- `offset` (optional): Starting offset for pagination (default: 0)
+
+#### get_aquifer_types
+
+Get aquifer type information (confined vs unconfined).
+
+**Parameters:**
+- `limit` (optional): Maximum number of results (default: 100)
+- `offset` (optional): Starting offset for pagination (default: 0)
+
+#### get_coordinate_accuracy_codes
+
+Get coordinate accuracy codes for latitude-longitude values.
+
+**Parameters:**
+- `limit` (optional): Maximum number of results (default: 100)
+- `offset` (optional): Starting offset for pagination (default: 0)
 
 ## Troubleshooting
 

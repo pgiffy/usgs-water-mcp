@@ -9,4 +9,4 @@ COPY . .
 RUN pip install --upgrade pip \
     && pip install -e .
 
-CMD ["python", "current_water_levels.py"]
+CMD ["python", "main.py"]
